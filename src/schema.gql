@@ -18,6 +18,10 @@ type CommitResponse {
 }
 
 type Query {
-  apikey: String!
   getCommits(page: Float, limit: Float): [CommitResponse!]!
+  ping: String!
+}
+
+type Mutation {
+  apikey: String!
 }

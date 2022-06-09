@@ -10,7 +10,7 @@ import { Observable } from 'rxjs'
 import { AuthService } from './auth.service'
 
 @Injectable()
-export class ApikeyGuard implements NestInterceptor {
+export class ApikeyInterceptor implements NestInterceptor {
   constructor(private readonly authService: AuthService) {}
   async intercept(
     context: ExecutionContext,

@@ -1,10 +1,10 @@
 import { UseGuards, UseInterceptors } from '@nestjs/common'
-import { Resolver, Query, Field, Args } from '@nestjs/graphql'
+import { Resolver, Query, Field, Args, Mutation } from '@nestjs/graphql'
 import { AuthGuard } from '@nestjs/passport'
 import { firstValueFrom } from 'rxjs'
 import { ApikeyService } from './apikey/apikey.service'
 import { AppService } from './app.service'
-import { ApikeyGuard } from './auth/auth.guard'
+import { ApikeyInterceptor } from './auth/auth.guard'
 import { CommitResponse as Commit } from './commit.response'
 
 @Resolver()
@@ -13,12 +13,13 @@ export class AppResolver {
     private readonly apikeyService: ApikeyService,
     private readonly appService: AppService,
   ) {}
-  @Query(() => String, { name: 'apikey' })
+  @Mutation(() => String, { name: 'apikey' })
   async getApikey() {
     return await this.apikeyService.create()
   }
 
   @Query(() => [Commit])
+  @UseInterceptors(ApikeyInterceptor)
   async getCommits(
     @Args('page', { nullable: true }) page?: number,
     @Args('limit', { nullable: true }) limit?: number,
@@ -29,5 +30,10 @@ export class AppResolver {
       )
       return commits
     } catch (error) {}
+  }
+
+  @Query(() => String)
+  ping() {
+    return 'hello world'
   }
 }
